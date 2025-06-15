@@ -1,0 +1,217 @@
+/* ──────────────────────────────────────────────────────────
+   1.  GRID LINES  (.grid-bg)
+   ────────────────────────────────────────────────────────── */
+
+.grid-bg {
+  /* performance containment */
+  contain: paint;
+  isolation: isolate;
+
+  /* configurable grid variables */
+  --size: 45px;
+  --line: color-mix(in hsl, canvasText, transparent 85%);
+  --offset-x: 0.5;
+  --offset-y: 0.5;
+
+  --grid: 65%; /* 0 = hidden · 100 = fully visible */
+  --fade: 15%; /* softness of the edge */
+  --half-band: calc((100% - var(--grid)) * 0.5);
+
+  /* grid pattern (x / y) */
+  background-image:
+    linear-gradient(90deg, var(--line) 1px, transparent 1px var(--size)),
+    linear-gradient(var(--line) 1px, transparent 1px var(--size));
+
+  background-size: var(--size) var(--size);
+  background-position: calc(var(--offset-x) * var(--size))
+    calc(var(--offset-y) * var(--size));
+
+  /* angled vignette mask */
+  mask-image: linear-gradient(
+    -45deg,
+    var(--background) 0,
+    var(--background) calc(50% - var(--half-band) - var(--fade)),
+    transparent calc(50% - var(--half-band)),
+    transparent calc(50% + var(--half-band)),
+    var(--background) calc(50% + var(--half-band) + var(--fade)),
+    var(--background) 100%
+  );
+  mask-mode: luminance;
+}
+
+/* ──────────────────────────────────────────────────────────
+   2.  GRADIENT MESH  (.gradient-bg)
+   ────────────────────────────────────────────────────────── */
+
+@keyframes hero-gradient-animation {
+  0% {
+    --s-start-0: 0%;
+    --s-end-0: 56.57388735244292%;
+    --x-0: 71%;
+    --c-0: hsla(6.845637583892622, 85%, 65%, 0.74);
+    --y-0: 3%;
+
+    --y-1: 62%;
+    --x-1: 15%;
+    --s-start-1: 9.263080693144833%;
+    --s-end-1: 126.1254331559258%;
+    --c-1: hsla(239.03225806451613, 37%, 31%, 0.37);
+
+    --s-start-2: 0%;
+    --s-end-2: 50%;
+    --y-2: 11%;
+    --x-2: 3%;
+    --c-2: hsla(34.99999999999998, 88%, 68%, 0.6);
+  }
+
+  100% {
+    --s-start-0: 8%;
+    --s-end-0: 88%;
+    --x-0: 74%;
+    --c-0: hsla(6.845637583892622, 85%, 65%, 0.7);
+    --y-0: 41%;
+
+    --y-1: 67%;
+    --x-1: 99%;
+    --s-start-1: 8%;
+    --s-end-1: 88%;
+    --c-1: hsla(239.03225806451613, 37%, 31%, 0.37);
+
+    --s-start-2: 8%;
+    --s-end-2: 88%;
+    --y-2: 14%;
+    --x-2: 26%;
+    --c-2: hsla(34.99999999999998, 88%, 68%, 0.6);
+  }
+}
+
+/* Custom-property registration (for smooth interpolation) */
+@property --s-start-0 {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+@property --s-end-0 {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 56.57388735244292%;
+}
+@property --x-0 {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 71%;
+}
+@property --c-0 {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: hsla(6.845637583892622, 85%, 65%, 0.74);
+}
+@property --y-0 {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 3%;
+}
+
+@property --y-1 {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 62%;
+}
+@property --x-1 {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 15%;
+}
+@property --s-start-1 {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 9.263080693144833%;
+}
+@property --s-end-1 {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 126.1254331559258%;
+}
+@property --c-1 {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: hsla(239.03225806451613, 37%, 31%, 0.37);
+}
+
+@property --s-start-2 {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+@property --s-end-2 {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 50%;
+}
+@property --y-2 {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 11%;
+}
+@property --x-2 {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 3%;
+}
+@property --c-2 {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: hsla(34.99999999999998, 88%, 68%, 0.6);
+}
+
+.gradient-bg {
+  /* performance containment & GPU promotion */
+  contain: paint;
+  isolation: isolate;
+  will-change: transform;
+
+  /* initial key variables (synced with 0% keyframe for first paint) */
+  --x-0: 71%;
+  --c-0: hsla(6.845637583892622, 85%, 65%, 0.74);
+  --y-0: 3%;
+
+  --y-1: 62%;
+  --x-1: 15%;
+  --c-1: hsla(239.03225806451613, 37%, 31%, 0.37);
+
+  --y-2: 11%;
+  --x-2: 3%;
+  --c-2: hsla(34.99999999999998, 88%, 68%, 0.6);
+
+  /* base colour (transparent so only the mesh + grid show) */
+  background-color: hsla(0, 0%, 100%, 0);
+
+  /* gradient mesh + SVG noise */
+  background-image:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 3000 3000' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"),
+    radial-gradient(
+      circle at var(--x-0) var(--y-0),
+      var(--c-0) var(--s-start-0),
+      transparent var(--s-end-0)
+    ),
+    radial-gradient(
+      circle at var(--x-1) var(--y-1),
+      var(--c-1) var(--s-start-1),
+      transparent var(--s-end-1)
+    ),
+    radial-gradient(
+      circle at var(--x-2) var(--y-2),
+      var(--c-2) var(--s-start-2),
+      transparent var(--s-end-2)
+    );
+
+  background-blend-mode: overlay, normal, normal, normal;
+  animation: hero-gradient-animation 15s linear infinite alternate;
+}
+
+/* Honour reduced-motion users */
+@media (prefers-reduced-motion: reduce) {
+  .gradient-mesh {
+    animation: none;
+  }
+}
